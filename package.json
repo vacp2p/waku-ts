@@ -1,5 +1,5 @@
 {
-  "name": "waku-ts",
+  "name": "@vacp2p/waku-ts",
   "description": "Waku Typescript Client",
   "version": "0.1.0",
   "author": "Vac <github.com/vacp2p>",
