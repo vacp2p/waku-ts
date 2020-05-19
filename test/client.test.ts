@@ -1,8 +1,60 @@
-import Waku from "../src";
+import Waku, { IWakuInfoResponse } from "../src";
 
 describe("Waku", () => {
-  it("needs tests", async () => {
-    const waku = new Waku("http://localhost:8545");
+  let waku: Waku;
+  let info: IWakuInfoResponse;
+  let keyPairId: string;
+
+  beforeEach(async () => {
+    waku = new Waku("https://waku.walletconnect.org");
+    info = await waku.init();
+  });
+
+  it("should instantiate", async () => {
     expect(waku).toBeTruthy();
+  });
+
+  it("should init controllers", async () => {
+    expect(info).toBeTruthy();
+  });
+
+  it("should create new key pair", async () => {
+    keyPairId = await waku.request({
+      id: 1,
+      jsonrpc: "2.0",
+      method: "waku_newKeyPair",
+      params: [],
+    });
+    expect(keyPairId).toBeTruthy();
+  });
+
+  it("should check key pair", async () => {
+    const check = await waku.request({
+      id: 1,
+      jsonrpc: "2.0",
+      method: "waku_hasKeyPair",
+      params: [keyPairId],
+    });
+    expect(check).toBeTruthy();
+  });
+
+  it("should get public key", async () => {
+    const pubKey = await waku.request({
+      id: 1,
+      jsonrpc: "2.0",
+      method: "waku_getPublicKey",
+      params: [keyPairId],
+    });
+    expect(pubKey).toBeTruthy();
+  });
+
+  it("should get private key", async () => {
+    const prvKey = await waku.request({
+      id: 1,
+      jsonrpc: "2.0",
+      method: "waku_getPrivateKey",
+      params: [keyPairId],
+    });
+    expect(prvKey).toBeTruthy();
   });
 });

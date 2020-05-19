@@ -1,3 +1,4 @@
+import axios from "axios";
 import { EventEmitter } from "events";
 import { IRpcConnection } from "basic-provider";
 
@@ -7,10 +8,7 @@ export class HttpConnection extends EventEmitter implements IRpcConnection {
 
   constructor(url: string) {
     super();
-    if (url) {
-      this.url = url;
-      this.connected = true;
-    }
+    this.url = url;
   }
 
   public async send(payload: any): Promise<any> {
@@ -20,22 +18,26 @@ export class HttpConnection extends EventEmitter implements IRpcConnection {
     if (!this.connected) {
       throw new Error("HttpConnection is closed");
     }
-    const response = await fetch(this.url, {
-      method: "post",
+    const { data } = await axios.post(this.url, payload, {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(payload),
     });
-    const result = await response.json();
-    return result;
+    if (data.error) {
+      throw new Error(data.error.message);
+    }
+    return data.result;
   }
 
   public async open(): Promise<void> {
     this.connected = true;
+    this.emit("connect");
+    return;
   }
 
   public async close(): Promise<void> {
     this.connected = false;
+    this.emit("close");
+    return;
   }
 }

@@ -27,6 +27,11 @@ class Waku implements IWakuClient {
     this.signer = new WakuSigner(this.store);
   }
 
+  public async init(): Promise<any> {
+    await this.signer.init();
+    return this.provider.init();
+  }
+
   public async request(payload: JsonRpcRequest): Promise<any> {
     if (isSignerMethod(payload.method)) {
       return this.signer.request(payload);

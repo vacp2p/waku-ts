@@ -1,28 +1,24 @@
+import storage from "localStorage";
+
 import { safeJsonParse, safeJsonStringify } from "./json";
 import { getOrUndefined } from "./misc";
 
+export function getLocalStorage(): Storage {
+  return getOrUndefined<Storage>("localStorage", window) || storage;
+}
+
 export function setLocal(key: string, data: any): void {
-  const raw = safeJsonStringify(data);
-  const local = getOrUndefined<Storage>("localStorage", window);
-  if (local) {
-    local.setItem(key, raw);
-  }
+  const local = getLocalStorage();
+  local.setItem(key, safeJsonStringify(data));
 }
 
 export function getLocal(key: string): any {
-  let data: any = null;
-  let raw: string | null = null;
-  const local = getOrUndefined<Storage>("localStorage", window);
-  if (local) {
-    raw = local.getItem(key);
-  }
-  data = safeJsonParse(raw);
+  const local = getLocalStorage();
+  const data = safeJsonParse(local.getItem(key));
   return data;
 }
 
 export function removeLocal(key: string): void {
-  const local = getOrUndefined<Storage>("localStorage", window);
-  if (local) {
-    local.removeItem(key);
-  }
+  const local = getLocalStorage();
+  local.removeItem(key);
 }
