@@ -1,3 +1,5 @@
+export const WAKU_PREFIX = "waku";
+
 export const NETWORK_METHODS = {
   waku_info: "waku_info",
   waku_setMaxMessageSize: "waku_setMaxMessageSize",

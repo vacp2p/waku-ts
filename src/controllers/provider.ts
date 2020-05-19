@@ -1,7 +1,7 @@
 import BasicProvider from "basic-provider";
 
 import { RPC_METHODS } from "../constants";
-import { IWakuProvider } from "../typings";
+import { IWakuProvider, JsonRpcRequest } from "../typings";
 
 export class WakuProvider extends BasicProvider implements IWakuProvider {
   get isWakuProvider(): boolean {
@@ -20,5 +20,9 @@ export class WakuProvider extends BasicProvider implements IWakuProvider {
       await this.close();
       throw err;
     }
+  }
+
+  public async request(payload: JsonRpcRequest): Promise<any> {
+    return this.send(payload.method, payload.params);
   }
 }

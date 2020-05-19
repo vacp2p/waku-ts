@@ -1,11 +1,19 @@
-import { IWakuProvider, IWakuSigner, IWakuStore } from "./typings";
+import {
+  IWakuProvider,
+  IWakuSigner,
+  IWakuStore,
+  IWakuClient,
+  JsonRpcRequest,
+} from "./typings";
 import {
   HttpConnection,
   WakuProvider,
   WakuSigner,
   WakuStore,
 } from "./controllers";
-class Waku {
+import { isSignerMethod, isNetworkMethod } from "./helpers/validators";
+import { WAKU_PREFIX } from "./constants";
+class Waku implements IWakuClient {
   public provider: IWakuProvider;
   public store: IWakuStore;
   public signer: IWakuSigner;
@@ -17,6 +25,16 @@ class Waku {
         : provider;
     this.store = store || new WakuStore();
     this.signer = new WakuSigner(this.store);
+  }
+
+  public async request(payload: JsonRpcRequest): Promise<any> {
+    if (isSignerMethod(payload.method)) {
+      return this.signer.request(payload);
+    } else if (isNetworkMethod(payload.method)) {
+      return this.provider.request(payload);
+    }
+    const method = payload.method.replace(WAKU_PREFIX + "_", "");
+    return this[method](...payload.params);
   }
 }
 

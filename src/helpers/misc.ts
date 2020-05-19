@@ -13,3 +13,20 @@ export function getOrError<T>(name: string, target: any): T {
   }
   return res;
 }
+
+export function getFirstMatch<T>(
+  array: T[],
+  key: string,
+  value: any
+): T | undefined {
+  let result: T | undefined = undefined;
+  const matches = array.filter(
+    x => typeof x[key] !== "undefined" && x[key] === value
+  );
+
+  if (!!matches && matches.length) {
+    result = matches[0];
+  }
+
+  return result;
+}
