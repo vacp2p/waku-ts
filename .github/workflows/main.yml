@@ -1,0 +1,41 @@
+name: CI
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on: [pull_request]
+
+jobs:
+  spellcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+  
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@master
+        with:
+          node-version: 13
+      - name: Install
+        run: npm install
+      - name: Test
+        run: npm run lint
+        
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@master
+        with:
+          node-version: 13
+      - name: Install
+        run: npm install
+      - name: Test
+        run: npm run test
