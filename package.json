@@ -58,5 +58,8 @@
     "semi": true,
     "singleQuote": false,
     "trailingComma": "es5"
+  },
+  "dependencies": {
+    "basic-provider": "^1.1.0"
   }
 }
