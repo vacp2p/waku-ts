@@ -20,7 +20,7 @@ export interface IWakuKeyring extends IWakuController {
   getPrivateKey(id: string): Promise<string>;
   newSymKey(): Promise<string>;
   addSymKey(symKey: string): Promise<string>;
-  generateSymKeyFromPassword(): Promise<string>;
+  generateSymKeyFromPassword(password: string): Promise<string>;
   hasSymKey(id: string): Promise<boolean>;
   getSymKey(id: string): Promise<string>;
   deleteSymKey(id: string): Promise<boolean>;

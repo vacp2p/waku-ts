@@ -57,4 +57,24 @@ describe("Waku", () => {
     });
     expect(prvKey).toBeTruthy();
   });
+
+  it("should create symmetric key", async () => {
+    const symKey = await waku.request({
+      id: 1,
+      jsonrpc: "2.0",
+      method: "waku_newSymKey",
+      params: [],
+    });
+    expect(symKey).toBeTruthy();
+  });
+
+  it("should generate symmetric key from password", async () => {
+    const symKey = await waku.request({
+      id: 1,
+      jsonrpc: "2.0",
+      method: "waku_generateSymKeyFromPassword",
+      params: ["password"],
+    });
+    expect(symKey).toBeTruthy();
+  });
 });

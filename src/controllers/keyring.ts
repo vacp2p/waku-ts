@@ -1,9 +1,12 @@
 import {
   generateKeyPair,
   bufferToHex,
-  getPublic,
   hexToBuffer,
-  generatePrivate,
+  randomBytes,
+  pbkdf2,
+  utf8ToBuffer,
+  removeHexPrefix,
+  getPublicCompressed,
 } from "eccrypto-js";
 
 import {
@@ -16,8 +19,7 @@ import {
   JsonRpcRequest,
 } from "../typings";
 import { STORE_KEYS_ID, WAKU_PREFIX } from "../constants";
-import { uuid, getFirstMatch } from "../helpers";
-import { isKeyPair, isSymKey } from "../helpers/validators";
+import { getFirstMatch, isKeyPair, isSymKey } from "../helpers";
 
 export class WakuKeyring implements IWakuKeyring {
   private keyMap: KeyMap = {};
@@ -77,7 +79,7 @@ export class WakuKeyring implements IWakuKeyring {
   }
 
   public async newSymKey(): Promise<string> {
-    const key = this.genSymKey();
+    const key = await this.genSymKey();
     await this.addKey(key);
     return key.id;
   }
@@ -86,7 +88,7 @@ export class WakuKeyring implements IWakuKeyring {
     let key = this.getMatchingKey("symKey", symKey);
     if (!key) {
       key = {
-        id: uuid(),
+        id: this.getKeyId(symKey),
         symKey,
       };
     }
@@ -94,9 +96,8 @@ export class WakuKeyring implements IWakuKeyring {
     return key.id;
   }
 
-  public async generateSymKeyFromPassword(): Promise<string> {
-    // TODO: needs to accept optional "password" argument
-    const key = this.genSymKey();
+  public async generateSymKeyFromPassword(password: string): Promise<string> {
+    const key = await this.genSymKey(password);
     await this.addKey(key);
     return key.id;
   }
@@ -128,26 +129,37 @@ export class WakuKeyring implements IWakuKeyring {
   private genKeyPair(prvKey?: string): KeyPair {
     if (prvKey) {
       return {
-        id: uuid(),
-        pubKey: bufferToHex(getPublic(hexToBuffer(prvKey)), true),
+        id: this.getKeyId(prvKey),
+        pubKey: this.getPubKey(prvKey),
         prvKey,
       };
     } else {
       const key = generateKeyPair();
       return {
-        id: uuid(),
+        id: this.getKeyId(bufferToHex(key.privateKey)),
         pubKey: bufferToHex(key.publicKey, true),
         prvKey: bufferToHex(key.privateKey, true),
       };
     }
   }
 
-  private genSymKey(): SymKey {
-    const symKey = generatePrivate();
+  private async genSymKey(password?: string): Promise<SymKey> {
+    const symKey =
+      typeof password === "string"
+        ? await pbkdf2(utf8ToBuffer(password))
+        : randomBytes(32);
     return {
-      id: uuid(),
+      id: this.getKeyId(bufferToHex(symKey)),
       symKey: bufferToHex(symKey, true),
     };
+  }
+
+  private getPubKey(prvKey: string): string {
+    return bufferToHex(getPublicCompressed(hexToBuffer(prvKey)), true);
+  }
+
+  private getKeyId(prvKey: string): string {
+    return removeHexPrefix(this.getPubKey(prvKey)).substr(2);
   }
 
   private async loadKeys(): Promise<void> {
