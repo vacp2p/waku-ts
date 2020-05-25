@@ -6,8 +6,6 @@ export const NETWORK_METHODS = {
   waku_setMinPoW: "waku_setMinPoW",
   waku_setBloomFilter: "waku_setBloomFilter",
   waku_markTrustedPeer: "waku_markTrustedPeer",
-  waku_makeLightClient: "waku_makeLightClient",
-  waku_cancelLightClient: "waku_cancelLightClient",
 };
 
 export const KEYRING_METHODS = {
@@ -35,8 +33,14 @@ export const MESSAGING_METHODS = {
   waku_newMessageFilter: "waku_newMessageFilter",
 };
 
+export const CLIENT_METHODS = {
+  waku_makeLightClient: "waku_makeLightClient",
+  waku_cancelLightClient: "waku_cancelLightClient",
+};
+
 export const RPC_METHODS = {
   NETWORK: NETWORK_METHODS,
   KEYRING: KEYRING_METHODS,
   MESSAGING: MESSAGING_METHODS,
+  CLIENT: CLIENT_METHODS,
 };
