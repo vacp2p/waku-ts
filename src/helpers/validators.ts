@@ -1,7 +1,7 @@
 import { KeyPair, SymKey } from "../typings";
 import {
   NETWORK_METHODS,
-  SIGNER_METHODS,
+  KEYRING_METHODS,
   MESSAGING_METHODS,
 } from "../constants";
 
@@ -18,9 +18,9 @@ export function isNetworkMethod(value?: string): boolean {
   return Object.keys(NETWORK_METHODS).includes(value);
 }
 
-export function isSignerMethod(value?: string): boolean {
+export function isKeyringMethod(value?: string): boolean {
   if (!value) return false;
-  return Object.keys(SIGNER_METHODS).includes(value);
+  return Object.keys(KEYRING_METHODS).includes(value);
 }
 
 export function isMessagingMethod(value?: string): boolean {

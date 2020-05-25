@@ -1,6 +1,6 @@
 import {
   IWakuProvider,
-  IWakuSigner,
+  IWakuKeyring,
   IWakuStore,
   IWakuClient,
   JsonRpcRequest,
@@ -8,15 +8,15 @@ import {
 import {
   HttpConnection,
   WakuProvider,
-  WakuSigner,
+  WakuKeyring,
   WakuStore,
 } from "./controllers";
-import { isSignerMethod, isNetworkMethod } from "./helpers/validators";
+import { isKeyringMethod, isNetworkMethod } from "./helpers/validators";
 import { WAKU_PREFIX } from "./constants";
 class Waku implements IWakuClient {
   public provider: IWakuProvider;
   public store: IWakuStore;
-  public signer: IWakuSigner;
+  public keyring: IWakuKeyring;
 
   constructor(provider: string | IWakuProvider, store?: IWakuStore) {
     this.provider =
@@ -24,17 +24,17 @@ class Waku implements IWakuClient {
         ? new WakuProvider(new HttpConnection(provider))
         : provider;
     this.store = store || new WakuStore();
-    this.signer = new WakuSigner(this.store);
+    this.keyring = new WakuKeyring(this.store);
   }
 
   public async init(): Promise<any> {
-    await this.signer.init();
+    await this.keyring.init();
     return this.provider.init();
   }
 
   public async request(payload: JsonRpcRequest): Promise<any> {
-    if (isSignerMethod(payload.method)) {
-      return this.signer.request(payload);
+    if (isKeyringMethod(payload.method)) {
+      return this.keyring.request(payload);
     } else if (isNetworkMethod(payload.method)) {
       return this.provider.request(payload);
     }

@@ -11,7 +11,7 @@ export interface IWakuProvider extends BasicProvider, IWakuController {
   enable(): Promise<any>;
 }
 
-export interface IWakuSigner extends IWakuController {
+export interface IWakuKeyring extends IWakuController {
   newKeyPair(): Promise<string>;
   addPrivateKey(prvKey: string): Promise<string>;
   deleteKeyPair(id: string): Promise<boolean>;
@@ -35,5 +35,5 @@ export interface IWakuStore {
 export interface IWakuClient extends IWakuController {
   provider: IWakuProvider;
   store: IWakuStore;
-  signer: IWakuSigner;
+  keyring: IWakuKeyring;
 }

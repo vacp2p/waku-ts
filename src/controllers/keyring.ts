@@ -7,7 +7,7 @@ import {
 } from "eccrypto-js";
 
 import {
-  IWakuSigner,
+  IWakuKeyring,
   IWakuStore,
   KeyMap,
   KeyPair,
@@ -19,7 +19,7 @@ import { STORE_KEYS_ID, WAKU_PREFIX } from "../constants";
 import { uuid, getFirstMatch } from "../helpers";
 import { isKeyPair, isSymKey } from "../helpers/validators";
 
-export class WakuSigner implements IWakuSigner {
+export class WakuKeyring implements IWakuKeyring {
   private keyMap: KeyMap = {};
 
   constructor(private store: IWakuStore) {}

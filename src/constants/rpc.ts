@@ -10,7 +10,7 @@ export const NETWORK_METHODS = {
   waku_cancelLightClient: "waku_cancelLightClient",
 };
 
-export const SIGNER_METHODS = {
+export const KEYRING_METHODS = {
   waku_newKeyPair: "waku_newKeyPair",
   waku_addPrivateKey: "waku_addPrivateKey",
   waku_deleteKeyPair: "waku_deleteKeyPair",
@@ -37,6 +37,6 @@ export const MESSAGING_METHODS = {
 
 export const RPC_METHODS = {
   NETWORK: NETWORK_METHODS,
-  SIGNER: SIGNER_METHODS,
+  KEYRING: KEYRING_METHODS,
   MESSAGING: MESSAGING_METHODS,
 };
